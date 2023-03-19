@@ -24,5 +24,16 @@ module Rake
     def application
       @application ||= Rake::Application.new
     end
+
+    # Yield each file or directory component.
+    def each_dir_parent(dir, &block)    # :nodoc:
+      old_length, arr = nil, []
+      while dir != "." && dir.length != old_length
+        block ? yield(dir) : arr << dir
+        old_length = dir.length
+        dir = File.dirname(dir)
+      end
+      arr
+    end
   end
 end

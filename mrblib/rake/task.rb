@@ -60,4 +60,17 @@ module Rake
       @prerequisites.any? { |n| Rake.application.tasks[n].timestamp > stamp }
     end
   end
+
+  class FileCreationTask < FileTask
+    # Is this file task needed?  Yes if it doesn't exist.
+    def needed?
+      !File.exist?(name)
+    end
+
+    # Time stamp for file creation task.  This time stamp is earlier
+    # than any other time stamp.
+    def timestamp
+      Rake::EARLY
+    end
+  end
 end

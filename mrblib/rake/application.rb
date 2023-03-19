@@ -444,7 +444,6 @@ module Rake
           @top_level_tasks << arg unless arg =~ /^-/
         end
       end
-      end
       @top_level_tasks.push(default_task_name) if @top_level_tasks.empty?
     end
 

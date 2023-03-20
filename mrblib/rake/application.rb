@@ -55,10 +55,13 @@ module Rake
     end
 
     def top_level
-      if Rake.application.tasks.has_key?('default')
-        @tasks['default'].invoke
-      else
-        fail "Don't know how to build task 'default'"
+      @argv << 'default' if ! @argv.length
+      @argv.each do |arg|
+        if Rake.application.tasks.has_key?(arg)
+          @tasks[arg].invoke
+        else
+          fail "Don't know how to build task '#{arg}'"
+        end
       end
     end
 

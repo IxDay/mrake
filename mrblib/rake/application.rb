@@ -54,12 +54,18 @@ module Rake
     end
 
     def top_level
-      @argv << 'default' if ! @argv.length
-      @argv.each do |arg|
-        if Rake.application.tasks.has_key?(arg)
-          @tasks[arg].invoke
-        else
-          fail "Don't know how to build task '#{arg}'"
+      if options[:show_tasks]
+        display_tasks_and_comments
+      elsif options[:show_prereqs]
+        display_prerequisites
+      else
+        @argv << 'default' if ! @argv.length
+        @argv.each do |arg|
+          if Rake.application.tasks.has_key?(arg)
+            @tasks[arg].invoke
+          else
+            fail "Don't know how to build task '#{arg}'"
+          end
         end
       end
     end
@@ -88,7 +94,7 @@ module Rake
     def print_load_file(filename) = puts "(in : #{filename})"
 
     # Application options from the command line
-    def options() = (@options = {})
+    def options() = (@options ||= {})
 
     def handle_options(argv) # :nodoc:
       set_default_options
@@ -112,7 +118,7 @@ module Rake
       [
         ["--prereqs", "-P",
           "Display the tasks and dependencies, then exit.",
-          lambda { |value| options[:show_prereqs] = true }
+          lambda { |_| options[:show_prereqs] = true }
         ],
         ["--rakefile", "-f [FILENAME]",
           "Use FILENAME as the rakefile to search for.",
@@ -125,16 +131,21 @@ module Rake
         ["--tasks", "-T [PATTERN]",
           "Display the tasks (matching optional PATTERN) " +
           "with descriptions, then exit. ",
-          lambda { |value|
-            # select_tasks_to_show(options, :tasks, value)
-          }
+          lambda { |_| options[:show_tasks] = true }
         ],
       ]
     end
 
+    def display_prerequisites # :nodoc:
+      @tasks.each do |_, t|
+        puts "mrake #{t.name}"
+        t.prerequisites.each { |pre| puts "    #{pre}" }
+      end
+    end
+
 
     def set_default_options # :nodoc:
-      options[:show_all_tasks] = false
+      options[:show_tasks] = false
       options[:show_prereqs] = false
     end
   end

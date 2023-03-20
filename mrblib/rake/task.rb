@@ -6,6 +6,8 @@ module Rake
       end
     end
 
+    attr_reader :prerequisites
+
     def initialize(name)
       @name = name
       @prerequisites = []

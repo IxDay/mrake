@@ -1,12 +1,8 @@
 module Rake
   module DSL
-    def task(*args, &block)
-      Rake::Task.define_task(*args, &block)
-    end
+    def task(*args, &block) = Rake::Task.define_task(*args, &block)
 
-    def file(*args, &block)
-      Rake::FileTask.define_task(*args, &block)
-    end
+    def file(*args, &block) = Rake::FileTask.define_task(*args, &block)
 
     def cd(path, &block)
       puts "cd #{path}"
@@ -23,9 +19,7 @@ module Rake
       system command
     end
 
-    def file_create(*args, &block)
-      Rake::FileCreationTask.define_task(*args, &block)
-    end
+    def file_create(*args, &block) = Rake::FileCreationTask.define_task(*args, &block)
 
     def directory(*args, &block) # :doc:
       result = file_create(*args, &block)

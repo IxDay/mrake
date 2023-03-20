@@ -13,9 +13,7 @@ module Rake
       @already_invoked = false
     end
 
-    def name
-      @name.to_s
-    end
+    def name() = @name.to_s
 
     def invoke
       return if @already_invoked
@@ -34,26 +32,15 @@ module Rake
       self
     end
 
-    def reenable
-      @already_invoked = false
-    end
-
-    def needed?
-      true
-    end
+    def reenable() = (@already_invoked = false)
+    def needed?() = true
   end
 
   class FileTask < Task
-    def needed?
-      !File.exist?(name) || out_of_date?(timestamp)
-    end
+    def needed? = (!File.exist?(name) || out_of_date?(timestamp))
 
     def timestamp
-      if File.exist?(name)
-        File::Stat.new(name).mtime
-      else
-        0
-      end
+      File::Stat.new(name).mtime if File.exist?(name) else 0
     end
 
     def out_of_date?(stamp)
@@ -63,14 +50,10 @@ module Rake
 
   class FileCreationTask < FileTask
     # Is this file task needed?  Yes if it doesn't exist.
-    def needed?
-      !File.exist?(name)
-    end
+    def needed?() = !File.exist?(name)
 
     # Time stamp for file creation task.  This time stamp is earlier
     # than any other time stamp.
-    def timestamp
-      Rake::EARLY
-    end
+    def timestamp() = Rake::EARLY
   end
 end

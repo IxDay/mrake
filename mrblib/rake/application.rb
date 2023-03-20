@@ -22,9 +22,7 @@ module Rake
       Dir.chdir(@original_dir)
     end
 
-    def init
-      @argv = handle_options ARGV.dup
-    end
+    def init() = (@argv = handle_options ARGV.dup)
 
     def define_task(task_klass, *args, &block)
       name, deps = resolve_args(args)
@@ -87,14 +85,10 @@ module Rake
       nil
     end
 
-    def print_load_file(filename)
-      puts "(in : #{filename})"
-    end
+    def print_load_file(filename) = puts "(in : #{filename})"
 
     # Application options from the command line
-    def options
-      @options = {}
-    end
+    def options() = (@options = {})
 
     def handle_options(argv) # :nodoc:
       set_default_options

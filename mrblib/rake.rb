@@ -21,9 +21,7 @@
 #++
 module Rake
   class << self
-    def application
-      @application ||= Rake::Application.new
-    end
+    def application() = @application ||= Rake::Application.new
 
     # Yield each file or directory component.
     def each_dir_parent(dir, &block)    # :nodoc:

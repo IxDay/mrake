@@ -19,6 +19,8 @@ module Rake
       system command
     end
 
+    def desc(content) = (Rake.application.last_description = content)
+
     def file_create(*args, &block) = Rake::FileCreationTask.define_task(*args, &block)
 
     def directory(*args, &block) # :doc:

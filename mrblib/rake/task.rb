@@ -7,12 +7,14 @@ module Rake
     end
 
     attr_reader :prerequisites
+    attr_accessor :description
 
     def initialize(name)
       @name = name
       @prerequisites = []
       @actions = []
       @already_invoked = false
+      @description = ""
     end
 
     def name() = @name.to_s
@@ -42,7 +44,11 @@ module Rake
     def needed? = (!File.exist?(name) || out_of_date?(timestamp))
 
     def timestamp
-      File::Stat.new(name).mtime if File.exist?(name) else 0
+      if File.exist?(name)
+        File::Stat.new(name).mtime
+      else
+        0
+      end
     end
 
     def out_of_date?(stamp)

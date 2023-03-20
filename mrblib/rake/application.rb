@@ -2,6 +2,7 @@ module Rake
   class Application
 
     attr_accessor :tasks
+    attr_accessor :last_description
 
     DEFAULT_RAKEFILES = %w[Rakefile rakefile Rakefile.rb rakefile.rb]
 
@@ -10,6 +11,7 @@ module Rake
       @rakefile = nil
       @original_dir = Dir.pwd
       @tasks = {}
+      @last_description = nil
     end
 
     def run
@@ -30,6 +32,7 @@ module Rake
       @tasks[name] = t
       deps = deps.map{|d| d.to_s}
       t.enhance(deps, &block)
+      t.description = get_description if @last_description
       t
     end
 
@@ -129,8 +132,7 @@ module Rake
           }
         ],
         ["--tasks", "-T [PATTERN]",
-          "Display the tasks (matching optional PATTERN) " +
-          "with descriptions, then exit. ",
+          "Display the tasks with descriptions, then exit.",
           lambda { |_| options[:show_tasks] = true }
         ],
       ]
@@ -143,6 +145,17 @@ module Rake
       end
     end
 
+    def display_tasks_and_comments
+      @tasks.each do |_, t|
+        puts "mrake #{t.name} # #{t.description}" unless t.description.empty?
+      end
+    end
+
+    def get_description()
+      desc = @last_description
+      @last_description = nil
+      desc
+    end
 
     def set_default_options # :nodoc:
       options[:show_tasks] = false

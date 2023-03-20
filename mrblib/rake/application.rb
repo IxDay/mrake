@@ -1,5 +1,6 @@
 module Rake
   class Application
+
     attr_accessor :tasks
 
     DEFAULT_RAKEFILES = %w[Rakefile rakefile Rakefile.rb rakefile.rb]
@@ -22,7 +23,7 @@ module Rake
     end
 
     def init
-      @argv = ARGV.dup
+      @argv = handle_options ARGV.dup
     end
 
     def define_task(task_klass, *args, &block)
@@ -88,6 +89,59 @@ module Rake
 
     def print_load_file(filename)
       puts "(in : #{filename})"
+    end
+
+    # Application options from the command line
+    def options
+      @options ||= OpenStruct.new
+    end
+
+    def handle_options(argv) # :nodoc:
+      set_default_options
+
+      OptionParser.new do |opts|
+        opts.banner = "mrake [-f rakefile] {options} targets..."
+        opts.separator ""
+        opts.separator "Options are ..."
+
+        opts.on_tail("-h", "--help", "-H", "Display this help message.") do
+          puts opts
+          exit
+        end
+
+        standard_rake_options.each { |args| opts.on(*args) }
+        opts.environment("RAKEOPT")
+      end.parse(argv)
+    end
+
+    def standard_rake_options()
+      [
+        ["--prereqs", "-P",
+          "Display the tasks and dependencies, then exit.",
+          lambda { |value| options.show_prereqs = true }
+        ],
+        ["--rakefile", "-f [FILENAME]",
+          "Use FILENAME as the rakefile to search for.",
+          lambda { |value|
+            value ||= ""
+            @rakefiles.clear
+            @rakefiles << value
+          }
+        ],
+        ["--tasks", "-T [PATTERN]",
+          "Display the tasks (matching optional PATTERN) " +
+          "with descriptions, then exit. ",
+          lambda { |value|
+            select_tasks_to_show(options, :tasks, value)
+          }
+        ],
+      ]
+    end
+
+
+    def set_default_options # :nodoc:
+      options.show_all_tasks             = false
+      options.show_prereqs               = false
     end
   end
 end

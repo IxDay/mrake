@@ -93,7 +93,7 @@ module Rake
 
     # Application options from the command line
     def options
-      @options ||= OpenStruct.new
+      @options = {}
     end
 
     def handle_options(argv) # :nodoc:
@@ -118,7 +118,7 @@ module Rake
       [
         ["--prereqs", "-P",
           "Display the tasks and dependencies, then exit.",
-          lambda { |value| options.show_prereqs = true }
+          lambda { |value| options[:show_prereqs] = true }
         ],
         ["--rakefile", "-f [FILENAME]",
           "Use FILENAME as the rakefile to search for.",
@@ -132,7 +132,7 @@ module Rake
           "Display the tasks (matching optional PATTERN) " +
           "with descriptions, then exit. ",
           lambda { |value|
-            select_tasks_to_show(options, :tasks, value)
+            # select_tasks_to_show(options, :tasks, value)
           }
         ],
       ]
@@ -140,8 +140,8 @@ module Rake
 
 
     def set_default_options # :nodoc:
-      options.show_all_tasks             = false
-      options.show_prereqs               = false
+      options[:show_all_tasks] = false
+      options[:show_prereqs] = false
     end
   end
 end

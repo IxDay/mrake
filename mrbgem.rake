@@ -3,7 +3,6 @@ MRuby::Gem::Specification.new('mruby-rake') do |spec|
 
   spec.add_dependency "mruby-dir"
   spec.add_dependency "mruby-io"
-  spec.add_dependency "mruby-ostruct"
   spec.add_dependency "mruby-optparse"
   spec.add_dependency "mruby-process"
   spec.add_dependency "mruby-require"

@@ -28,7 +28,7 @@ module Rake
 
     def define_task(task_klass, *args, &block)
       name, deps = resolve_args(args)
-      t = task_klass.new(name)
+      t = @tasks.key?(name) ? @tasks[name] : task_klass.new(name)
       @tasks[name] = t
       deps = deps.map{|d| d.to_s}
       t.enhance(deps, &block)

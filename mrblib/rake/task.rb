@@ -17,8 +17,6 @@ module Rake
       @description = ""
     end
 
-    def name() = @name.to_s
-
     def invoke
       return if @already_invoked
       return unless needed?
@@ -36,32 +34,30 @@ module Rake
       self
     end
 
-    def reenable() = (@already_invoked = false)
-    def needed?() = true
+    def name = @name.to_s
+    def reenable = (@already_invoked = false)
+    def needed? = true
+    def timestamp = Time.now
+
+    class << self
+      def [](task_name)
+        Rake.application.tasks[task_name.to_s]
+      end
+    end
   end
 
   class FileTask < Task
     def needed? = (!File.exist?(name) || out_of_date?(timestamp))
-
-    def timestamp
-      if File.exist?(name)
-        File::Stat.new(name).mtime
-      else
-        0
-      end
-    end
-
-    def out_of_date?(stamp)
-      @prerequisites.any? { |n| Rake.application.tasks[n].timestamp > stamp }
-    end
+    def timestamp = File.exist?(name) ? File::Stat.new(name).mtime : 0
+    def out_of_date?(stamp) = @prerequisites.any? { |n| Rake.application.tasks[n].timestamp > stamp }
   end
 
   class FileCreationTask < FileTask
     # Is this file task needed?  Yes if it doesn't exist.
-    def needed?() = !File.exist?(name)
+    def needed? = !File.exist?(name)
 
     # Time stamp for file creation task.  This time stamp is earlier
     # than any other time stamp.
-    def timestamp() = Rake::EARLY
+    def timestamp = Rake::EARLY
   end
 end

@@ -29,7 +29,7 @@ module Rake
     end
 
     def enhance(d, &b)
-      @prerequisites |= d if d
+      @prerequisites += d if d
       @actions << b if b
       self
     end

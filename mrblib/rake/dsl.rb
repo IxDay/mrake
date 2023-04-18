@@ -19,9 +19,22 @@ module Rake
       system command
     end
 
+    def walk(path)
+      return to_enum(:walk, path) unless block_given?
+      yield path and return if File.file? path
+      Dir.foreach(path) do |entry|
+        next if entry == "." or entry ==".."
+        entry = File.join([path, entry])
+        walk(entry) {|entry| yield entry } if File.directory?(entry)
+        yield entry
+      end
+    end
+
     def desc(content) = (Rake.application.last_description = content)
 
     def file_create(*args, &block) = Rake::FileCreationTask.define_task(*args, &block)
+
+    def file_list(path, &block) = walk(path).filter {|e| file(e) if (!block or block.call e)}
 
     def directory(*args, &block) # :doc:
       result = file_create(*args, &block)

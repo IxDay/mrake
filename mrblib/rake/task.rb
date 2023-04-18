@@ -20,11 +20,8 @@ module Rake
     def invoke
       return if @already_invoked
       return unless needed?
-
-      @prerequisites.each do |p|
-        Rake.application.tasks[p].invoke
-      end
-      @actions.each do |b| b.call(self) end
+      @prerequisites.each {|p| Rake.application.tasks[p].invoke}
+      @actions.each {|b| b.call(self)}
       @already_invoked = true
     end
 

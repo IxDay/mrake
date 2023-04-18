@@ -62,7 +62,7 @@ module Rake
       elsif options[:show_prereqs]
         display_prerequisites
       else
-        @argv << 'default' if ! @argv.length
+        @argv << 'default' if @argv.length == 0
         @argv.each do |arg|
           if Rake.application.tasks.has_key?(arg)
             @tasks[arg].invoke

@@ -146,8 +146,8 @@ module Rake
     end
 
     def display_tasks_and_comments
-      @tasks.each do |_, t|
-        puts "mrake #{t.name} # #{t.description}" unless t.description.empty?
+      @tasks.sort.each do |k, v|
+        puts "mrake #{k} # #{v.description}" unless v.description.empty?
       end
     end
 

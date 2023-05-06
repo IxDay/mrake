@@ -45,9 +45,9 @@ module Rake
 
   class FileTask < Task
     def needed? = !File.exist?(name) || out_of_date?(timestamp)
-    def timestamp = File.exist?(name) ? File::Stat.new(name).mtime : 0
+    def timestamp = (File::Stat.new(name).mtime if File.exist?(name))
     def out_of_date?(stamp) = @prerequisites.any? { |n|
-      Rake.application.tasks[n].timestamp > stamp
+      Rake.application.tasks[n].needed? || (Rake.application.tasks[n].timestamp > stamp)
     }
   end
 

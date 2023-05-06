@@ -131,6 +131,10 @@ module Rake
             @rakefiles << value
           }
         ],
+        ["--libdir", "-I LIBDIR",
+            "Include LIBDIR in the search path for required modules.",
+            lambda { |value| $:.push(value) }
+        ],
         ["--tasks", "-T [PATTERN]",
           "Display the tasks with descriptions, then exit.",
           lambda { |_| options[:show_tasks] = true }

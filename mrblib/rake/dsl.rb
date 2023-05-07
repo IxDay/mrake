@@ -19,6 +19,10 @@ module Rake
       system command
     end
 
+    def namespace(name=nil, &block) # :doc:
+      Rake.application.in_namespace(name, &block)
+    end
+
     def walk(path)
       return to_enum(:walk, path) unless block_given?
       yield path and return if File.file? path

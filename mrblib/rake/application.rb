@@ -11,7 +11,8 @@ module Rake
       @rakefile = nil
       @original_dir = Dir.pwd
       @tasks = {}
-      @last_description = nil
+      @last_description = ""
+      @scope = ""
     end
 
     def run
@@ -29,13 +30,26 @@ module Rake
       @argv = handle_options ARGV.dup
     end
 
+    def in_namespace(name)
+      @scope = name + ":"
+      yield(self)
+      self
+    ensure
+      @scope = ""
+    end
+
     def define_task(task_klass, *args, &block)
       name, deps = resolve_args(args)
-      t = @tasks.key?(name) ? @tasks[name] : task_klass.new(name)
-      @tasks[name] = t
-      deps = deps.map{|d| d.to_s}
-      t.enhance(deps, &block)
-      t.description = get_description if @last_description
+      scope, description, @last_description = @scope, @last_description, ""
+      t = @tasks.fetch(scope + name) { |n|
+        if task_klass <= Rake::FileTask && scope != ""
+          @tasks.store(name, task_klass.new(name)).enhance(deps.map{|d| scope + d.to_s}, &block)
+          block, deps, scope, task_klass = nil, [name], "", Rake::Task
+        end
+        @tasks.store(n, task_klass.new(n))
+      }
+      t.enhance(deps.map{|d| scope + d.to_s}, &block)
+      t.description = description
       t
     end
 
@@ -152,12 +166,6 @@ module Rake
       @tasks.sort.each do |k, v|
         puts "mrake #{k} # #{v.description}" unless v.description.empty?
       end
-    end
-
-    def get_description()
-      desc = @last_description
-      @last_description = nil
-      desc
     end
 
     def set_default_options # :nodoc:

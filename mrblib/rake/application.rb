@@ -24,7 +24,10 @@ module Rake
       Dir.chdir(@original_dir)
     end
 
-    def init() = (@argv = handle_options ARGV.dup)
+    def init()
+      ENV.fetch("RUBYLIBS", "").split(":").each {|v| $:.push(v)}
+      @argv = handle_options ARGV.dup
+    end
 
     def define_task(task_klass, *args, &block)
       name, deps = resolve_args(args)
@@ -130,10 +133,6 @@ module Rake
             @rakefiles.clear
             @rakefiles << value
           }
-        ],
-        ["--libdir", "-I LIBDIR",
-            "Include LIBDIR in the search path for required modules.",
-            lambda { |value| $:.push(value) }
         ],
         ["--tasks", "-T [PATTERN]",
           "Display the tasks with descriptions, then exit.",

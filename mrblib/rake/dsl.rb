@@ -41,14 +41,13 @@ module Rake
     def file_list(path, &block) = walk(path).filter {|e| file(e) if (!block or block.call e)}
 
     def directory(*args, &block) # :doc:
-      result = file_create(*args, &block)
       dir, _ = *Rake.application.resolve_args(args)
       Rake.each_dir_parent(dir) do |d|
         file_create d do |t|
           Rake.each_dir_parent(t.name).reverse.each { | d | Dir.mkdir(d) unless File.exist?(t.name) }
         end
       end
-      result
+      file_create(*args, &block)
     end
   end
 end

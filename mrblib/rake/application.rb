@@ -41,13 +41,7 @@ module Rake
     def define_task(task_klass, *args, &block)
       name, deps = resolve_args(args)
       scope, description, @last_description = @scope, @last_description, ""
-      t = @tasks.fetch(scope + name) { |n|
-        if task_klass <= Rake::FileTask && scope != ""
-          @tasks.store(name, task_klass.new(name)).enhance(deps.map{|d| scope + d.to_s}, &block)
-          block, deps, scope, task_klass = nil, [name], "", Rake::Task
-        end
-        @tasks.store(n, task_klass.new(n))
-      }
+      t = @tasks.fetch(scope + name) {|n| @tasks.store(n, task_klass.new(name))}
       t.enhance(deps.map{|d| scope + d.to_s}, &block)
       t.description = description
       t

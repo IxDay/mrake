@@ -38,7 +38,7 @@ module Rake
 
     def file_create(*args, &block) = Rake::FileCreationTask.define_task(*args, &block)
 
-    def file_list(path, &block) = walk(path).filter {|e| file(e) if (!block or block.call e)}
+    def file_list(path, &block) = walk(path).filter {|e| File.file?(e) and (file(e) if (!block or block.call e))}
 
     def directory(*args, &block) # :doc:
       dir, _ = *Rake.application.resolve_args(args)

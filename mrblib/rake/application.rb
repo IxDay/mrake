@@ -43,7 +43,7 @@ module Rake
       scope, description, @last_description = @scope, @last_description, ""
       t = @tasks.fetch(scope + name) {|n| @tasks.store(n, task_klass.new(name))}
       t.enhance(deps.map{|d| scope + d.to_s}, &block)
-      t.description = description
+      t.description = description if description != ""
       t
     end
 

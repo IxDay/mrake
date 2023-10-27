@@ -14,7 +14,7 @@ Limitations
 -----------
 
 - No support for multithreading
-- No support for rules and namespaces
+- No support for rules
 - No support for tracing
 - No support for task arguments
 

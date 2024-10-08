@@ -40,6 +40,15 @@ module Rake
 
     def file_list(path, &block) = walk(path).filter {|e| File.file?(e) and (file(e) if (!block or block.call e))}
 
+    def rule(*args, &block)
+      dst, src = args.first.first
+      Dir.glob("**/*"+src).each do |f|
+        name = f.delete_suffix(src)+dst
+        task dst => [name]
+        file(name => [f]) { |t| block.call t }
+      end
+    end
+
     def directory(*args, &block) # :doc:
       dir, _ = *Rake.application.resolve_args(args)
       Rake.each_dir_parent(dir) do |d|

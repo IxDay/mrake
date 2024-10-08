@@ -10,7 +10,7 @@ module Rake
       @rakefiles = DEFAULT_RAKEFILES.dup
       @rakefile = nil
       @original_dir = Dir.pwd
-      @tasks = {}
+      @tasks = Hash.new { |h, k| h[k] = Rake::FileTask.define_task(k) if File.exist?(k)}
       @last_description = ""
       @scope = ""
     end

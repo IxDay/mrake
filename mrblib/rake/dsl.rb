@@ -38,7 +38,16 @@ module Rake
 
     def file_create(*args, &block) = Rake::FileCreationTask.define_task(*args, &block)
 
-    def file_list(path, &block) = walk(path).filter {|e| File.file?(e) and (file(e) if (!block or block.call e))}
+    def file_list(*paths, &block)
+      files = []
+      paths.each do |path|
+        Dir.glob(path).select {|f| File.file?(f) and (!block or block.call f)}.each do |f|
+          file(f)
+          files << f
+        end
+      end
+      files
+    end
 
     def rule(*args, &block)
       dst, src = args.first.first

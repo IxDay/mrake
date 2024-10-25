@@ -1,6 +1,6 @@
 #! /usr/bin/env mruby
 
-raise NotImplementedError, "you must be install `Rake'" unless Object.const_defined?(:Rake)
+raise NotImplementedError, "you must be install 'Rake'" unless Object.const_defined?(:Rake)
 
 self.extend Rake::DSL
 Rake.application.run

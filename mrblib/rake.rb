@@ -35,3 +35,11 @@ module Rake
     end
   end
 end
+
+class IO
+  def readlines()
+    return to_enum(:readlines, self) unless block_given?
+    # the each line from mruby seem broken so we are fixing it this way
+    each {|buf| buf.split("\n").each {|line| yield line}}
+  end
+end

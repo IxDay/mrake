@@ -4,6 +4,8 @@ module Rake
 
     def file(*args, &block) = Rake::FileTask.define_task(*args, &block)
 
+    def has?(executable) = !!File.which(executable)
+
     def cd(path, &block)
       puts "cd #{path}"
       if block
